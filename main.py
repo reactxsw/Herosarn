@@ -6,9 +6,7 @@ font200 = ImageFont.truetype("rsc/Roboto.ttf", 200)
 font145 = ImageFont.truetype("rsc/Roboto.ttf", 145)
 font90 = ImageFont.truetype("rsc/Roboto.ttf", 90)
 
-doc, lottery = [], []
-ask, check = False, True
-black = (0, 0, 0)
+doc, lottery, ask, check, black = [], [], False, True, (0, 0, 0)
 tday = datetime.today().strftime('%Y-%m-%d')
 while check:
     response = post(headers={"Cache-Control": "no-cache", "Pragma": "no-cache"},
@@ -40,11 +38,8 @@ while check:
 # วันที่
 previewimg = Image.open('rsc/preview.png')  # 3508x4960
 blankimg = Image.new("RGB", (3508, 4960), "WHITE")
-canvas = [(previewimg, ImageDraw.Draw(previewimg)),
-          (blankimg, ImageDraw.Draw(blankimg))]
-
-for img, canva in canvas:
-    img = img
+for img, canva in [(previewimg, ImageDraw.Draw(previewimg)),
+                   (blankimg, ImageDraw.Draw(blankimg))]:
     if img == previewimg:
         date = lastest.split("-")
         canva.text((1025, 110), date[2] + "/" + date[1] +
@@ -52,18 +47,18 @@ for img, canva in canvas:
     # รางวัลที่ 1
     canva.text((250, 380), lottery[0][0], font=font200, fill=black)
     # เลขหน้า 3 ตัว
-    canva.text((450, 790), lottery[6][0], font=font200, fill=black)
-    canva.text((450, 980), lottery[6][1], font=font200, fill=black)
+    canva.text((490, 790), lottery[6][0], font=font200, fill=black)
+    canva.text((490, 980), lottery[6][1], font=font200, fill=black)
     # ใกล้ 1
     canva.text((160, 1330), lottery[8][0], font=font200, fill=black)
     canva.text((1000, 1330), lottery[8][1], font=font200, fill=black)
     # เลขท้าย 2 ตัว
-    canva.text((1300, 380),
+    canva.text((1330, 380),
                lottery[5][0], font=font200, fill=black)
     # เลขท้าย 3 ตัว
-    canva.text((1300, 790),
+    canva.text((1330, 790),
                lottery[7][0], font=font200, fill=black)
-    canva.text((1300, 980),
+    canva.text((1330, 980),
                lottery[7][1], font=font200, fill=black)
     # รางวัลที่ 2
     canva.text((1000, 1680), lottery[1][0], font=font90, fill=black)
@@ -73,34 +68,31 @@ for img, canva in canvas:
     canva.text((1420, 1780), lottery[1][4], font=font90, fill=black)
     canva.text((1420, 1880), "********", font=font90, fill=black)
     # รางวัลที่ 3
-    matrix = [(160, 2130), (160, 2230), (160, 2330),
-              (580, 2130), (580, 2230), (580, 2330),
-              (1000, 2130), (1000, 2230), (1420, 2130), (1420, 2230)]
-    for i, m in enumerate(matrix):
+    for i, m in enumerate([(160, 2130), (160, 2230), (160, 2330),
+                           (580, 2130), (580, 2230), (580, 2330),
+                           (1000, 2130), (1000, 2230), (1420, 2130), (1420, 2230)]):
         canva.text(m, lottery[2][i], font=font90, fill=black)
 
     # รางวัลที่ 4
     # matrix = [n0 , nm , posx]
-    matrix = [[0, 16], [16, 32], [32, 41], [41, 50]]
     posx = 1840
-    for m in matrix:
+    for m in [[0, 16], [16, 32], [32, 41], [41, 50]]:
         posy = 830
         for num in lottery[3][m[0]:m[1]]:
             canva.text((posx, posy), num, font=font90, fill=black)
-            posy = posy+100
-        posx = posx+420
+            posy += 100
+        posx += 420
 
     # รางวัลที่ 5
     # matrix = [n0 , nm , posx , posy]
-    matrix = [[0, 14], [14, 28], [
-        28, 42], [42, 56], [56, 70], [70, 84], [84, 92], [92, 100]]
     posx = 160
-    for i, m in enumerate(matrix):
+    for i, m in enumerate([[0, 14], [14, 28], [
+            28, 42], [42, 56], [56, 70], [70, 84], [84, 92], [92, 100]]):
         posy = 2565 if i < 6 else 3165
         for num in lottery[4][m[0]:m[1]]:
             canva.text((posx, posy), num, font=font90, fill=black)
-            posy = posy+100
-        posx = posx+420
+            posy += 100
+        posx += 420
 
     doc.append(img)
 doc.extend([img.crop((0, 0, 3508, 2480)), img.crop((0, 2480, 3508, 4960))])
@@ -111,4 +103,4 @@ for count, page in enumerate(doc):
 doc[0].save(f'H-{lastest}.pdf', save_all=True, append_images=doc[1:],
             title="Herosarn", author="Herosarn", subject="Lottery")
 
-input(f": saved as H-{lastest}.pdf")
+input(f": File saved as H-{lastest}.pdf")
